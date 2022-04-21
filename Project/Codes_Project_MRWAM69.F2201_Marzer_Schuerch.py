@@ -82,12 +82,11 @@ print(std_SMI_19)
 
 
 #Regression
+import numpy as np
 import seaborn as sns
-import pandas as pd
-df = pd.read_csv("SMI_ALL.csv")
-sns.lmplot(x='one',y='two',data=df,fit_reg=True)
+import matplotlib.pyplot as plt
 
-
+#indexiert mit DAX
 
 
 

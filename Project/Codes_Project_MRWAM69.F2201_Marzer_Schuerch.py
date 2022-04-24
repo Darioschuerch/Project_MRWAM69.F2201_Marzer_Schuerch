@@ -20,10 +20,12 @@ SMI["MA50"].plot()
 SMI["MA200"].plot()
 plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
 plt.legend()
+plt.ylabel(" CHF", fontsize =15)
 plt.xlabel("Date", fontsize =15)
 plt.title("SMI 2004-2022: Moving Average of a 50 and 200 Day Base", fontsize = 25)
 
 
+#Gleitender Mittelwert 50 / 200 2008-2010
 #get the data
 start = datetime(2008,1,1)
 end = datetime(2010,12,12)
@@ -38,6 +40,7 @@ SMI_08["MA50"].plot()
 SMI_08["MA100"].plot()
 plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
 plt.legend()
+plt.ylabel(" CHF", fontsize =15)
 plt.xlabel("Date", fontsize =15)
 plt.title("SMI 2008-2010: Moving Average of a 50 and 100 Day Base", fontsize = 25)
 
@@ -58,6 +61,7 @@ SMI_19["MA50"].plot()
 SMI_19["MA100"].plot()
 plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
 plt.legend()
+plt.ylabel(" CHF", fontsize =15)
 plt.xlabel("Date", fontsize =15)
 plt.title("SMI 2019-2021: Moving Average of a 50 and 100 Day Base", fontsize = 25)
 
@@ -127,9 +131,9 @@ Var_08 = investment_08 - var_cutoff_08
 import matplotlib.pyplot as plt
 Var_array_08= []
 days_08 = int(504)
-for x in range(1, days+1):
+for x in range(1, days_08+1):
     Var_array_08.append(np.round(Var_08 * np.sqrt(x), 2))
-    #print(str(x) + " day VaR @ 95% confidence: " + str(np.round(Var * np.sqrt(x), 2))) # acitvate code to see VaR over 2 years
+    #print(str(x) + " day VaR @ 95% confidence: " + str(np.round(Var_08 * np.sqrt(x), 2))) # acitvate code to see VaR over 2 years
 
 plt.figure(figsize=(15,7))
 plt.xlabel("Days", fontsize = 15)
@@ -139,6 +143,7 @@ plt.ylim(0,900000)
 plt.title("Max portfolio loss (VaR) during Financial Crisis 2008-2010", fontsize = 25)
 plt.plot(Var_array_08, "b")
 plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+
 
 #Checking distributions of equities against normal distribution
 import matplotlib.pyplot as plt

@@ -18,7 +18,7 @@ SMI["MA200"] = SMI["Close"].rolling(200).mean()
 SMI["Close"].plot(figsize = (15,4))
 SMI["MA50"].plot()
 SMI["MA200"].plot()
-plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 plt.ylabel(" CHF", fontsize =15)
 plt.xlabel("Date", fontsize =15)
@@ -38,7 +38,7 @@ SMI_08 ["MA100"] = SMI_08["Close"].rolling(100).mean()
 SMI_08["Close"].plot(figsize = (15,4))
 SMI_08["MA50"].plot()
 SMI_08["MA100"].plot()
-plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 plt.ylabel(" CHF", fontsize =15)
 plt.xlabel("Date", fontsize =15)
@@ -59,7 +59,7 @@ SMI_19["MA100"] = SMI_19["Close"].rolling(100).mean()
 SMI_19["Close"].plot(figsize = (15,4))
 SMI_19["MA50"].plot()
 SMI_19["MA100"].plot()
-plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 plt.ylabel(" CHF", fontsize =15)
 plt.xlabel("Date", fontsize =15)
@@ -74,21 +74,35 @@ print(mean_SMI_08)
 print(mean_SMI_19)
 
 
-#Volatility
+# Comparison Volatility SMI 2008-2010 and SMI 2019-2021
 
-SMI_08["returns"] = (SMI_08["Adj Close"]/SMI_08["Close"].shift(1)) -1
-SMI_19["returns"] = (SMI_19["Adj Close"]/SMI_19["Close"].shift(1)) -1
-SMI_08["returns"].hist(bins = 100, label = "SMI 2008-2010", alpha = 0.5, figsize = (15,7))
-SMI_19["returns"].hist(bins = 100, label = "SMI 2019-2021", alpha = 0.5)
-plt.legend()
-plt.title("Volatility SMI 2008-2010 and SMI 2019-2021", fontsize = 30)
+#data 08: calculate pct change & log return
 
-# Comparison standard deviation SMI 2008-2010 and SMI 2019-2022
+df_08 = pd.read_csv("SMI_08.csv",sep = ",", index_col=0)
+df_08["Pct Change"]= df_08["Close"].pct_change()
+df_08["Log Return"]= np.log(df_08["Close"]/df_08["Close"].shift(1))
+df_08.head()
 
-std_SMI_08= SMI_08["Adj Close"].std()
-std_SMI_19= SMI_19["Adj Close"].std()
+#data 19: calculate pct change & log return
+df_19 = pd.read_csv("SMI_19.csv",sep = ",", index_col=0)
+df_19["Pct Change"]= df_19["Close"].pct_change()
+df_19["Log Return"]= np.log(df_19["Close"]/df_19["Close"].shift(1))
+df_19.head()
+
+# Volatilität SMI über 2 Börsenjahre in den jeweiligen Krisen (252 *3)
+ln_SMI_08= df_08["Log Return"].std()
+ln_SMI_19= df_19["Log Return"].std()
+std_SMI_08 = ln_SMI_08 * np.sqrt(504) * 100
+std_SMI_19 = ln_SMI_19 * np.sqrt(504) * 100
+
 print(std_SMI_08)
 print(std_SMI_19)
+
+#plot
+df_08["Log Return"].hist(bins = 100, label = "SMI 2008-2010", alpha = 0.5, figsize = (15,7))
+df_19["Log Return"].hist(bins = 100, label = "SMI 2019-2021", alpha = 0.5)
+plt.legend()
+plt.title("Volatility SMI 2008-2010 and SMI 2019-2021", fontsize = 30)
 
 #VaR 5 Titel 2008-2010  during Financial Crisis
 from pandas_datareader import data as pdr
@@ -127,22 +141,22 @@ Var_08 = investment_08 - var_cutoff_08
 #print(Var_08)
 
 
-#Calculate VaR over 2 Years
+#Calculate VaR over 3 Years
 import matplotlib.pyplot as plt
 Var_array_08= []
-days_08 = int(504)
+days_08 = int(756)
 for x in range(1, days_08+1):
     Var_array_08.append(np.round(Var_08 * np.sqrt(x), 2))
-    #print(str(x) + " day VaR @ 95% confidence: " + str(np.round(Var_08 * np.sqrt(x), 2))) # acitvate code to see VaR over 2 years
+    #print(str(x) + " day VaR @ 95% confidence: " + str(np.round(Var_08 * np.sqrt(x), 2))) # acitvate code to see VaR over 3 years
 
 plt.figure(figsize=(15,7))
 plt.xlabel("Days", fontsize = 15)
-plt.ylabel("Max. portfolio loss (CHF)", fontsize = 15)
-plt.xlim(0,600)
-plt.ylim(0,900000)
+plt.ylabel("Max. portfolio loss in Mio (CHF)", fontsize = 15)
+plt.xlim(0,800)
+plt.ylim(0,1_000_000)
 plt.title("Max portfolio loss (VaR) during Financial Crisis 2008-2010", fontsize = 25)
 plt.plot(Var_array_08, "b")
-plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 
 
 #Checking distributions of equities against normal distribution
@@ -152,125 +166,153 @@ returns_08["NOVN.SW"].hist(bins = 100, label = "NOVN.SW", alpha = 0.5, figsize =
 x = np.linspace(mean_portfolio_08 - 3* std_portfolio_08, mean_portfolio_08 +3 *std_portfolio_08,100)
 plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_08, std_portfolio_08), "r")
 plt.title("Novartis returns (binned) vs. normal distribution", fontsize = (20))
-plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
 returns_08["UBSG.SW"].hist(bins = 100, label = "UBSG.SW", alpha = 0.5, figsize = (10,4))
 x = np.linspace(mean_portfolio_08 - 3* std_portfolio_08, mean_portfolio_08 +3 *std_portfolio_08,100)
 plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_08, std_portfolio_08), "r")
 plt.title("UBS returns (binned) vs. normal distribution", fontsize = (20))
-plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
 returns_08["NESN.SW"].hist(bins = 100, label = "NESN.SW", alpha = 0.5, figsize = (10,4))
 x = np.linspace(mean_portfolio_08 - 3* std_portfolio_08, mean_portfolio_08 +3 *std_portfolio_08,100)
 plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_08, std_portfolio_08), "r")
 plt.title("Nestle returns (binned) vs. normal distribution", fontsize = (20))
-plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
 returns_08["CSGN.SW"].hist(bins = 100, label = "CSGN.SW", alpha = 0.5, figsize = (10,4))
 x = np.linspace(mean_portfolio_08 - 3* std_portfolio_08, mean_portfolio_08 +3 *std_portfolio_08,100)
 plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_08, std_portfolio_08), "r")
 plt.title("Credit Suisse returns (binned) vs. normal distribution", fontsize = (20))
-plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
 returns_08["ABBN.SW"].hist(bins = 100, label = "ABBN.SW", alpha = 0.5, figsize = (10,4))
 x = np.linspace(mean_portfolio_08 - 3* std_portfolio_08, mean_portfolio_08 +3 *std_portfolio_08,100)
 plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_08, std_portfolio_08), "r")
 plt.title("ABB returns (binned) vs. normal distribution", fontsize = (20))
-plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
-#VaR 5  Titel 2020-2021  during COVID
-portfolio_20 = ["NOVN.SW", "UBSG.SW", "NESN.SW", "CSGN.SW", "ABBN.SW"]
-weights_20 = np.array([.2, .2, .2, .2, .2])
-investment_20 = 1000000
-start_20 = datetime(2020,1,1)
-end_20 = datetime(2021,12,31)
-df_20 = pdr.get_data_yahoo(portfolio_20, start_20, end_20) ["Close"]
-returns_20 = df_20.pct_change()
+#VaR 5  Titel 2019-2021  during COVID
+portfolio_19 = ["NOVN.SW", "UBSG.SW", "NESN.SW", "CSGN.SW", "ABBN.SW"]
+weights_19 = np.array([.2, .2, .2, .2, .2])
+investment_19 = 1000000
+start_19 = datetime(2019,1,1)
+end_19 = datetime(2021,12,31)
+df_19 = pdr.get_data_yahoo(portfolio_19, start_19, end_19) ["Close"]
+returns_19 = df_19.pct_change()
 #print(returns)
 
 # Generate Var-Cov matrix (Kovarianzmatrix)
-cov_matrix_20 = returns_20.cov()
+cov_matrix_19 = returns_19.cov()
 #print(cov_matrix)
 
 #calculate mean returns of the stocks
-mean_returns_20 = returns_20.mean()
+mean_returns_19 = returns_19.mean()
 
 #calculate mean returns for the portfolio and normalize against investments weights
-mean_portfolio_20 = mean_returns_20.dot(weights_20)
+mean_portfolio_19 = mean_returns_19.dot(weights_19)
 
 #Standard deviation of the portfolio
-std_portfolio_20 = np.sqrt(weights_20.T.dot(cov_matrix_20).dot(weights_20))
+std_portfolio_19 = np.sqrt(weights_19.T.dot(cov_matrix_19).dot(weights_19))
 
 #Mean of investment
-mean_investment_20 = (1+mean_portfolio_20) * investment_20
+mean_investment_19 = (1+mean_portfolio_19) * investment_19
 
 #Standard deviation of investment
-std_investment_20 = investment_20 * std_portfolio_20
+std_investment_19 = investment_19 * std_portfolio_19
 
 #Konfidenzintervall (95%)
-conf_level_20 = 0.05
-var_cutoff_20 = norm.ppf(conf_level_20, mean_investment_20, std_investment_20) #normal cumulatice distribution
-Var = investment_20 - var_cutoff_20
+conf_level_19 = 0.05
+var_cutoff_19 = norm.ppf(conf_level_19, mean_investment_19, std_investment_19) #normal cumulatice distribution
+Var = investment_19 - var_cutoff_19
 #print(Var)
 
-#Calculate VaR over 2 Years
+#Calculate VaR over 3 Years
 import matplotlib.pyplot as plt
-Var_array_20= []
-days_20 = int(504)
-for x in range(1, days_20+1):
-    Var_array_20.append(np.round(Var * np.sqrt(x), 2))
-    #print(str(x) + " day VaR @ 95% confidence: " + str(np.round(VaR * np.sqrt(x), 2))) # acitvate code to see VaR over 2 years
+Var_array_19= []
+days_19 = int(756)
+for x in range(1, days_19+1):
+    Var_array_19.append(np.round(Var * np.sqrt(x), 2))
+    #print(str(x) + " day VaR @ 95% confidence: " + str(np.round(VaR * np.sqrt(x), 2))) # acitvate code to see VaR over 3 years
 
 plt.figure(figsize=(15,7))
 plt.xlabel("Days", fontsize = 15)
 plt.ylabel("Max. portfolio loss (CHF)", fontsize = 15)
-plt.xlim(0,600)
-plt.ylim(0,700000)
-plt.title("Max portfolio loss (VaR) during COVID Pandedmic 2020-2021", fontsize = 25)
-plt.plot(Var_array_20, "b")
-plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+plt.xlim(0,800)
+plt.ylim(0,700_000)
+plt.title("Max portfolio loss (VaR) during COVID Pandedmic 2019-2021", fontsize = 25)
+plt.plot(Var_array_19, "b")
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 
 #Checking distributions of equities against normal distribution
 import matplotlib.pyplot as plt
 import scipy as scipy
 
-returns_20["NOVN.SW"].hist(bins = 100, label = "NOVN.SW", alpha = 0.5, figsize = (10,4))
-x = np.linspace(mean_portfolio_20 - 3* std_portfolio_20, mean_portfolio_20 +3 *std_portfolio_20,100)
-plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_20, std_portfolio_20), "r")
+returns_19["NOVN.SW"].hist(bins = 100, label = "NOVN.SW", alpha = 0.5, figsize = (10,4))
+x = np.linspace(mean_portfolio_19 - 3* std_portfolio_19, mean_portfolio_19 +3 *std_portfolio_19,100)
+plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_19, std_portfolio_19), "r")
 plt.title("Novartis returns (binned) vs. normal distribution", fontsize = (20))
-plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
-returns_20["UBSG.SW"].hist(bins = 100, label = "UBSG.SW", alpha = 0.5, figsize = (10,4))
-x = np.linspace(mean_portfolio_20 - 3* std_portfolio_20, mean_portfolio_20 +3 *std_portfolio_20,100)
-plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_20, std_portfolio_20), "r")
+returns_19["UBSG.SW"].hist(bins = 100, label = "UBSG.SW", alpha = 0.5, figsize = (10,4))
+x = np.linspace(mean_portfolio_19 - 3* std_portfolio_19, mean_portfolio_19 +3 *std_portfolio_19,100)
+plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_19, std_portfolio_19), "r")
 plt.title("UBS returns (binned) vs. normal distribution", fontsize = (20))
-plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
-returns_20["NESN.SW"].hist(bins = 100, label = "NESN.SW", alpha = 0.5, figsize = (10,4))
-x = np.linspace(mean_portfolio_20 - 3* std_portfolio_20, mean_portfolio_20 +3 *std_portfolio_20,100)
-plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_20, std_portfolio_20), "r")
+returns_19["NESN.SW"].hist(bins = 100, label = "NESN.SW", alpha = 0.5, figsize = (10,4))
+x = np.linspace(mean_portfolio_19 - 3* std_portfolio_19, mean_portfolio_19 +3 *std_portfolio_19,100)
+plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_19, std_portfolio_19), "r")
 plt.title("Nestle returns (binned) vs. normal distribution", fontsize = (20))
-plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
-returns_20["CSGN.SW"].hist(bins = 100, label = "CSGN.SW", alpha = 0.5, figsize = (10,4))
-x = np.linspace(mean_portfolio_20 - 3* std_portfolio_20, mean_portfolio_20 +3 *std_portfolio_20,100)
-plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_20, std_portfolio_20), "r")
+returns_19["CSGN.SW"].hist(bins = 100, label = "CSGN.SW", alpha = 0.5, figsize = (10,4))
+x = np.linspace(mean_portfolio_19 - 3* std_portfolio_19, mean_portfolio_19 +3 *std_portfolio_19,100)
+plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_19, std_portfolio_19), "r")
 plt.title("Credit Suisse returns (binned) vs. normal distribution", fontsize = (20))
-plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
-returns_20["ABBN.SW"].hist(bins = 100, label = "ABBN.SW", alpha = 0.5, figsize = (10,4))
-x = np.linspace(mean_portfolio_20 - 3* std_portfolio_20, mean_portfolio_20 +3 *std_portfolio_20,100)
-plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_20, std_portfolio_20), "r")
+returns_19["ABBN.SW"].hist(bins = 100, label = "ABBN.SW", alpha = 0.5, figsize = (10,4))
+x = np.linspace(mean_portfolio_19 - 3* std_portfolio_19, mean_portfolio_19 +3 *std_portfolio_19,100)
+plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_19, std_portfolio_19), "r")
 plt.title("ABB returns (binned) vs. normal distribution", fontsize = (20))
-plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
+
+#Sharp ratio Portfolio 2008-2010
+returns_08 = np.sum(np.multiply(mean_returns_08, weights_08)) * 504
+std_08 = std_portfolio_08
+risk_free_return_08 = int(0.018) # Annahme
+sharpe_ratio_08= (mean_portfolio_08 - risk_free_return_08) / std_08
+print(sharpe_ratio_08)
+
+#Sharp ratio Portfolio 2019-2021
+returns_19 = np.sum(np.multiply(mean_returns_08, weights_08)) * 504
+std_19 = std_portfolio_19
+risk_free_return_19 = 0 # Annahme
+sharpe_ratio_19= (mean_portfolio_19 - risk_free_return_19) / std_19
+print(sharpe_ratio_19)
+
+#balkendiagramm
+y = [sharpe_ratio_08, sharpe_ratio_19]
+x = ["Portfolio 2008-2010", "Portfolio 2019-2021"]
+
+plt.figure(figsize=(10,7))
+plt.bar(x, y, color=["b","g"])
+plt.xlim(0,1)
+plt.ylim(-0.01,0.06)
+plt.ylabel("Sharpe Ratio", fontsize = (15))
+plt.title("Sharpe Ratio Portfolio 2008-2010 vs 2019-2021", fontsize = (25))
+plt.legend(["Portfolio 2008-2010","Portfolio 2019-2021"])
+plt.xticks(x, fontsize = (15))
+plt.legend(["Portfolio 2019-2021"])
 

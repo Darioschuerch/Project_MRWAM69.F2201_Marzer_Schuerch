@@ -316,3 +316,4 @@ plt.legend(["Portfolio 2008-2010","Portfolio 2019-2021"])
 plt.xticks(x, fontsize = (15))
 plt.legend(["Portfolio 2019-2021"])
 
+

@@ -1,12 +1,19 @@
-import pandas as pd
-import yfinance as yf
-from datetime import datetime
+#!pip install yfinance
+#!pip install fix-yahoo-finance
+#!pip install yfinance
+#!pip install datetime
+#!pip install pandas_datareader
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy as scipy
+import yfinance as yf
+import pandas as pd
+import datetime as dt
+from datetime import datetime
 from pandas_datareader import data as pdr
 from scipy.stats import norm
-%matplotlib inline
 
+#Get the data
 start = datetime(2004,1,1)
 end = datetime.today()
 SMI= yf.download("^SSMI", start, end)

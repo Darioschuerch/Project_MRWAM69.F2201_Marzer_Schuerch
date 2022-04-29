@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pandas_datareader import data as pdr
 from scipy.stats import norm
+%matplotlib inline
 
 start = datetime(2004,1,1)
 end = datetime.today()
@@ -45,13 +46,12 @@ plt.ylabel(" CHF", fontsize =15)
 plt.xlabel("Date", fontsize =15)
 plt.title("SMI 2008-2010: Moving Average of a 50 and 100 Day Base", fontsize = 25)
 
-#Gleitender Mittelwert 50 / 200 2020 -2022
+#Gleitender Mittelwert 50 / 200 2019 -2022
 
 #get the data
 start = datetime(2019,1,1)
 end = datetime(2021,12,31)
 SMI_19= yf.download("^SSMI", start, end)
-
 SMI_19.to_csv("SMI_19.csv")
 
 #plot
@@ -79,7 +79,7 @@ print(mean_SMI_19)
 df_04 = pd.read_csv("SMI_ALL.csv",sep = ",", index_col=0)
 df_04["Pct Change"]= df_04["Adj Close"].pct_change()
 df_04["Log Return"]= np.log(df_04["Adj Close"]/df_04["Adj Close"].shift(1))
-df_04 =df_04[1:] #Remove the first observation NaN
+df_04 =df_04[1:] #Remove the first line (NaN)
 df_04.head()
 #ploting volatility clustering
 df_04["Log Return"].plot(figsize = (20,7))
@@ -95,14 +95,14 @@ plt.xlabel("Date",  fontsize = 25)
 df_08 = pd.read_csv("SMI_08.csv",sep = ",", index_col=0)
 df_08["Pct Change"]= df_08["Adj Close"].pct_change()
 df_08["Log Return"]= np.log(df_08["Adj Close"]/df_08["Adj Close"].shift(1))
-df_08 =df_08[1:] #Remove the first observation (NaN)
+df_08 =df_08[1:] #Remove the first line (NaN)
 df_08.head()
 
 #data 19: calculate pct change & log return
 df_19 = pd.read_csv("SMI_19.csv",sep = ",", index_col=0)
 df_19["Pct Change"]= df_19["Adj Close"].pct_change()
 df_19["Log Return"]= np.log(df_19["Adj Close"]/df_19["Adj Close"].shift(1))
-df_19 =df_19[1:] #Remove the first observation (NaN)
+df_19 =df_19[1:] #Remove the first line (NaN)
 df_19.head()
 
 # Volatilität SMI über 3 Börsenjahre in den jeweiligen Krisen (252 *3)
@@ -110,7 +110,6 @@ std_SMI_08= df_08["Log Return"].std()
 std_SMI_19= df_19["Log Return"].std()
 std_SMI_08_3Y = std_SMI_08 * np.sqrt(756) * 100
 std_SMI_19_3Y = std_SMI_19 * np.sqrt(756) * 100
-
 print(std_SMI_08_3Y)
 print(std_SMI_19_3Y)
 
@@ -188,29 +187,30 @@ plt.plot(Var_array_08, "b")
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 
 #Calculating VaR 2008-2010
+returns_08 = returns_08.fillna(0.0)
+portfolio_returns_08 = returns_08.iloc[-days_08:].dot(weights_08)
 
-returns_19 = returns_19.fillna(0.0)
-portfolio_returns_19 = returns_19.iloc[-days_19:].dot(weights_19)
+VaR_08 = np.percentile(portfolio_returns_08, 100 * (conf_level_08)) * investment_08
+print(VaR_08)  # max loss with a conf level of 95% is 32.3k
 
-VaR_19 = np.percentile(portfolio_returns_19, 100 * (conf_level_19)) * investment_19
-print(VaR_19)  # max loss with a conf level of 95% is 18.4k
 
 #plot
-portfolio_returns_19_ = returns_19.fillna(0.0).iloc[-days_19:].dot(weights_19)
+portfolio_returns_08 = returns_08.fillna(0.0).iloc[-days_08:].dot(weights_08)
 
-portfolio_VaR_19 = VaR_19
-portfolio_VaR_return_19 = portfolio_VaR_19 / investment_19
+portfolio_VaR_08 = VaR_08
+portfolio_VaR_return_08 = portfolio_VaR_08 / investment_08
 
 plt.figure(figsize=(15,7))
-plt.hist(portfolio_returns_19, bins= 50)
-plt.axvline(portfolio_VaR_return_19, color="r", linestyle="solid")
+plt.hist(portfolio_returns_08, bins= 50)
+plt.axvline(portfolio_VaR_return_08, color="r", linestyle="solid")
 plt.legend(["VaR for alpha = 5", "Historical Returns SMI Portfolio" ])
-plt.title("Value at Risk (VaR) SMI Portfolio 2019-2021", fontsize = 25)
+plt.title("Value at Risk (VaR) SMI Portfolio 2008-2010", fontsize = 25)
 plt.xlabel("Return", fontsize = 20)
 plt.ylabel("Observation Frequency", fontsize = 20)
-plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
+plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
 
 #Checking distributions of equities against normal distribution
+#Wie im Abschnitt über die Berechnung erwähnt, gehen wir bei der Berechnung des VaR davon aus, dass die Renditen der Aktien in unserem Portfolio normal verteilt sind. Natürlich können wir das für die Zukunft nicht vorhersagen, aber wir können zumindest prüfen, wie die historischen Renditen verteilt waren, um zu beurteilen, ob der VaR für unser Portfolio geeignet ist
 import matplotlib.pyplot as plt
 import scipy as scipy
 returns_08["NOVN.SW"].hist(bins = 100, label = "NOVN.SW", alpha = 0.5, figsize = (10,4))
@@ -299,7 +299,28 @@ plt.title("VaR sample portfolio during COVID Pandedmic 2019-2021", fontsize = 25
 plt.plot(Var_array_19, "b")
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 
+#Calculating VaR 2019-2021
+returns_19 = returns_19.fillna(0.0)
+portfolio_returns_19 = returns_19.iloc[-days_19:].dot(weights_19)
 
+VaR_19 = np.percentile(portfolio_returns_19, 100 * (conf_level_19)) * investment_19
+print(VaR_19)  # max loss with a conf level of 95% is 18.4k
+
+
+#plot
+portfolio_returns_19_ = returns_19.fillna(0.0).iloc[-days_19:].dot(weights_19)
+
+portfolio_VaR_19 = VaR_19
+portfolio_VaR_return_19 = portfolio_VaR_19 / investment_19
+
+plt.figure(figsize=(15,7))
+plt.hist(portfolio_returns_19, bins= 50)
+plt.axvline(portfolio_VaR_return_19, color="r", linestyle="solid")
+plt.legend(["VaR for alpha = 5", "Historical Returns SMI Portfolio" ])
+plt.title("Value at Risk (VaR) SMI Portfolio 2019-2021", fontsize = 25)
+plt.xlabel("Return", fontsize = 20)
+plt.ylabel("Observation Frequency", fontsize = 20)
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 
 #Checking distributions of equities against normal distribution
 
@@ -355,7 +376,6 @@ print(sharpe_ratio_19)
 #balkendiagramm
 y = [sharpe_ratio_08, sharpe_ratio_19]
 x = ["Portfolio 2008-2010", "Portfolio 2019-2021"]
-
 plt.figure(figsize=(10,7))
 plt.bar(x, y, color=["b","g"])
 plt.xlim(0,1)

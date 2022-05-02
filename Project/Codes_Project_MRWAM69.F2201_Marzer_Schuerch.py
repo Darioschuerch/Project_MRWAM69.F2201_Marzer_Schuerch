@@ -401,8 +401,9 @@ plt.ylim(-0.01,0.06)
 plt.ylabel("Sharpe Ratio", fontsize = (15))
 plt.title("Sharpe Ratio Portfolio 2008-2010 vs 2019-2021", fontsize = (25))
 plt.bar(x, y, tick_label=labels, color=["darkgreen", "darkblue"])
+plt.grid(which="major", color="k", linestyle="-.", linewidth=0.2)
 plt.xticks(x, fontsize = (15))
-plt.show()
+
 
 
 

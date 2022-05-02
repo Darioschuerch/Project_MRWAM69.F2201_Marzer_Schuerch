@@ -111,6 +111,7 @@ df_19["Pct Change"]= df_19["Adj Close"].pct_change()
 df_19["Log Return"]= np.log(df_19["Adj Close"]/df_19["Adj Close"].shift(1))
 df_19 =df_19[1:] #Remove the first line (NaN)
 df_19.head()
+# Note: pct Change and Log return calculate nearly the same values
 
 # Volatilität SMI über 3 Börsenjahre in den jeweiligen Krisen (252 *3)
 std_SMI_08= df_08["Log Return"].std()
@@ -182,10 +183,10 @@ mean_investment_08 = (1+mean_portfolio_08) * investment_08
 std_investment_08 = investment_08 * std_portfolio_08
 
 #Konfidenzintervall (95%)
-conf_level_08 = 0.05
-var_cutoff_08 = norm.ppf(conf_level_08, mean_investment_08, std_investment_08) #normal cumulatice distribution
+alpha_08 = 0.05
+var_cutoff_08 = norm.ppf(alpha_08, mean_investment_08, std_investment_08) #normal cumulatice distribution
 Var_08 = investment_08 - var_cutoff_08
-#print(Var_08)
+print(Var_08)
 
 
 #Calculate VaR over 3 Years
@@ -209,7 +210,7 @@ plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 returns_08 = returns_08.fillna(0.0)
 portfolio_returns_08 = returns_08.iloc[-days_08:].dot(weights_08)
 
-VaR_08 = np.percentile(portfolio_returns_08, 100 * (conf_level_08)) * investment_08
+VaR_08 = np.percentile(portfolio_returns_08, 100 * (alpha_08)) * investment_08
 print(VaR_08)  # max loss with a conf level of 95% is 32.3k
 
 
@@ -222,11 +223,12 @@ portfolio_VaR_return_08 = portfolio_VaR_08 / investment_08
 plt.figure(figsize=(15,7))
 plt.hist(portfolio_returns_08, bins= 50)
 plt.axvline(portfolio_VaR_return_08, color="r", linestyle="solid")
-plt.legend(["VaR for alpha = 5", "Historical Returns SMI Portfolio" ])
+plt.legend(["VaR for alpha = 5%", "Historical Returns SMI Portfolio" ])
 plt.title("Value at Risk (VaR) SMI Portfolio 2008-2010", fontsize = 25)
 plt.xlabel("Return", fontsize = 20)
 plt.ylabel("Observation Frequency", fontsize = 20)
 plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
+
 
 #Checking distributions of equities against normal distribution
 #Wie im Abschnitt über die Berechnung erwähnt, gehen wir bei der Berechnung des VaR davon aus, dass die Renditen der Aktien in unserem Portfolio normal verteilt sind. Natürlich können wir das für die Zukunft nicht vorhersagen, aber wir können zumindest prüfen, wie die historischen Renditen verteilt waren, um zu beurteilen, ob der VaR für unser Portfolio geeignet ist
@@ -297,17 +299,18 @@ mean_investment_19 = (1+mean_portfolio_19) * investment_19
 std_investment_19 = investment_19 * std_portfolio_19
 
 #Konfidenzintervall (95%)
-conf_level_19 = 0.05
-var_cutoff_19 = norm.ppf(conf_level_19, mean_investment_19, std_investment_19) #normal cumulatice distribution
-Var = investment_19 - var_cutoff_19
-#print(Var)
+alpha_19 = 0.05
+var_cutoff_19 = norm.ppf(alpha_19, mean_investment_19, std_investment_19) #normal cumulatice distribution
+Var_19 = investment_19 - var_cutoff_19
+print(Var_19)
 
 #Calculate VaR over 3 Years
 Var_array_19= []
 days_19 = int(756)
 for x in range(1, days_19+1):
-    Var_array_19.append(np.round(Var * np.sqrt(x), 2))
-    #print(str(x) + " day VaR @ 95% confidence: " + str(np.round(VaR * np.sqrt(x), 2))) # acitvate code to see VaR over 3 years
+    Var_array_19.append(np.round(Var_19 * np.sqrt(x), 2))
+    #print(str(x) + " day VaR @ 95% confidence: " + str(np.round(Var_19 * np.sqrt(x), 2))) # acitvate code to see VaR over 3 years
+
 
 plt.figure(figsize=(15,7))
 plt.xlabel("Days", fontsize = 15)
@@ -321,12 +324,9 @@ plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 #Calculating VaR 2019-2021
 returns_19 = returns_19.fillna(0.0)
 portfolio_returns_19 = returns_19.iloc[-days_19:].dot(weights_19)
-
-VaR_19 = np.percentile(portfolio_returns_19, 100 * (conf_level_19)) * investment_19
+VaR_19 = np.percentile(portfolio_returns_19, 100 * (alpha_19)) * investment_19
 print(VaR_19)  # max loss with a conf level of 95% is 18.4k
 
-
-#plot
 portfolio_returns_19_ = returns_19.fillna(0.0).iloc[-days_19:].dot(weights_19)
 
 portfolio_VaR_19 = VaR_19
@@ -335,7 +335,7 @@ portfolio_VaR_return_19 = portfolio_VaR_19 / investment_19
 plt.figure(figsize=(15,7))
 plt.hist(portfolio_returns_19, bins= 50)
 plt.axvline(portfolio_VaR_return_19, color="r", linestyle="solid")
-plt.legend(["VaR for alpha = 5", "Historical Returns SMI Portfolio" ])
+plt.legend(["VaR for alpha = 5%", "Historical Returns SMI Portfolio" ])
 plt.title("Value at Risk (VaR) SMI Portfolio 2019-2021", fontsize = 25)
 plt.xlabel("Return", fontsize = 20)
 plt.ylabel("Observation Frequency", fontsize = 20)

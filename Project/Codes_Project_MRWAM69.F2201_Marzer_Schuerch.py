@@ -127,6 +127,18 @@ df_19["Log Return"].hist(bins = 100, label = "SMI 2019-2021", alpha = 0.5)
 plt.legend()
 plt.title("Volatility SMI 2008-2010 and SMI 2019-2021", fontsize = 30)
 
+#Boxplot 2008-2010
+box_08 = df_08["Log Return"]
+plt.figure(figsize = (10,7))
+plt.title("Boxplot Log Returns SMI  2008-2010", fontsize = (25))
+ax = box_08.plot.box()
+
+#Boxplot 2019-2021
+box_19 = df_19["Log Return"]
+plt.figure(figsize = (10,7))
+plt.title("Boxplot Log Returns SMI  2019-2021", fontsize = (25))
+ax = box_19.plot.box()
+
 #Übersicht portfolio
 portfolio = ["NOVN.SW", "UBSG.SW", "NESN.SW", "CSGN.SW", "ABBN.SW"]
 start = datetime(2004,1,1)
@@ -223,35 +235,35 @@ import scipy as scipy
 returns_08["NOVN.SW"].hist(bins = 100, label = "NOVN.SW", alpha = 0.5, figsize = (10,4))
 x = np.linspace(mean_portfolio_08 - 3* std_portfolio_08, mean_portfolio_08 +3 *std_portfolio_08,100)
 plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_08, std_portfolio_08), "r")
-plt.title("Novartis returns (binned) vs. normal distribution", fontsize = (20))
+plt.title("Novartis returns 2008-2010 vs. normal distribution", fontsize = (20))
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
 returns_08["UBSG.SW"].hist(bins = 100, label = "UBSG.SW", alpha = 0.5, figsize = (10,4))
 x = np.linspace(mean_portfolio_08 - 3* std_portfolio_08, mean_portfolio_08 +3 *std_portfolio_08,100)
 plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_08, std_portfolio_08), "r")
-plt.title("UBS returns (binned) vs. normal distribution", fontsize = (20))
+plt.title("UBS returns 2008-2010 vs. normal distribution", fontsize = (20))
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
 returns_08["NESN.SW"].hist(bins = 100, label = "NESN.SW", alpha = 0.5, figsize = (10,4))
 x = np.linspace(mean_portfolio_08 - 3* std_portfolio_08, mean_portfolio_08 +3 *std_portfolio_08,100)
 plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_08, std_portfolio_08), "r")
-plt.title("Nestle returns (binned) vs. normal distribution", fontsize = (20))
+plt.title("Nestle returns 2008-2010 vs. normal distribution", fontsize = (20))
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
 returns_08["CSGN.SW"].hist(bins = 100, label = "CSGN.SW", alpha = 0.5, figsize = (10,4))
 x = np.linspace(mean_portfolio_08 - 3* std_portfolio_08, mean_portfolio_08 +3 *std_portfolio_08,100)
 plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_08, std_portfolio_08), "r")
-plt.title("Credit Suisse returns (binned) vs. normal distribution", fontsize = (20))
+plt.title("Credit Suisse returns 2008-2010 vs. normal distribution", fontsize = (20))
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
 returns_08["ABBN.SW"].hist(bins = 100, label = "ABBN.SW", alpha = 0.5, figsize = (10,4))
 x = np.linspace(mean_portfolio_08 - 3* std_portfolio_08, mean_portfolio_08 +3 *std_portfolio_08,100)
 plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_08, std_portfolio_08), "r")
-plt.title("ABB returns (binned) vs. normal distribution", fontsize = (20))
+plt.title("ABB returns 2008-2010 vs. normal distribution", fontsize = (20))
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
@@ -334,35 +346,35 @@ plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 returns_19["NOVN.SW"].hist(bins = 100, label = "NOVN.SW", alpha = 0.5, figsize = (10,4))
 x = np.linspace(mean_portfolio_19 - 3* std_portfolio_19, mean_portfolio_19 +3 *std_portfolio_19,100)
 plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_19, std_portfolio_19), "r")
-plt.title("Novartis returns (binned) vs. normal distribution", fontsize = (20))
+plt.title("Novartis returns 2019-2021 vs. normal distribution", fontsize = (20))
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
 returns_19["UBSG.SW"].hist(bins = 100, label = "UBSG.SW", alpha = 0.5, figsize = (10,4))
 x = np.linspace(mean_portfolio_19 - 3* std_portfolio_19, mean_portfolio_19 +3 *std_portfolio_19,100)
 plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_19, std_portfolio_19), "r")
-plt.title("UBS returns (binned) vs. normal distribution", fontsize = (20))
+plt.title("UBS returns 2019-2021 vs. normal distribution", fontsize = (20))
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
 returns_19["NESN.SW"].hist(bins = 100, label = "NESN.SW", alpha = 0.5, figsize = (10,4))
 x = np.linspace(mean_portfolio_19 - 3* std_portfolio_19, mean_portfolio_19 +3 *std_portfolio_19,100)
 plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_19, std_portfolio_19), "r")
-plt.title("Nestle returns (binned) vs. normal distribution", fontsize = (20))
+plt.title("Nestle returns 2019-2021 vs. normal distribution", fontsize = (20))
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
 returns_19["CSGN.SW"].hist(bins = 100, label = "CSGN.SW", alpha = 0.5, figsize = (10,4))
 x = np.linspace(mean_portfolio_19 - 3* std_portfolio_19, mean_portfolio_19 +3 *std_portfolio_19,100)
 plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_19, std_portfolio_19), "r")
-plt.title("Credit Suisse returns (binned) vs. normal distribution", fontsize = (20))
+plt.title("Credit Suisse returns 2019-2021 vs. normal distribution", fontsize = (20))
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
 returns_19["ABBN.SW"].hist(bins = 100, label = "ABBN.SW", alpha = 0.5, figsize = (10,4))
 x = np.linspace(mean_portfolio_19 - 3* std_portfolio_19, mean_portfolio_19 +3 *std_portfolio_19,100)
 plt.plot(x, scipy.stats.norm.pdf(x, mean_portfolio_19, std_portfolio_19), "r")
-plt.title("ABB returns (binned) vs. normal distribution", fontsize = (20))
+plt.title("ABB returns 2019-2021 vs. normal distribution", fontsize = (20))
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 
@@ -382,16 +394,18 @@ print(sharpe_ratio_19)
 
 #balkendiagramm
 y = [sharpe_ratio_08, sharpe_ratio_19]
-x = ["Portfolio 2008-2010", "Portfolio 2019-2021"]
+x =[0.5, 1.5]
 plt.figure(figsize=(10,7))
-plt.bar(x, y, color=["b","g"])
-plt.xlim(0,1)
+labels = "Portfolio 2008-2010", "Portfolio 2019-2021"
 plt.ylim(-0.01,0.06)
 plt.ylabel("Sharpe Ratio", fontsize = (15))
 plt.title("Sharpe Ratio Portfolio 2008-2010 vs 2019-2021", fontsize = (25))
-plt.legend(["Portfolio 2008-2010","Portfolio 2019-2021"])
+plt.bar(x, y, tick_label=labels, color=["darkgreen", "darkblue"])
 plt.xticks(x, fontsize = (15))
-plt.legend(["Portfolio 2019-2021"])
+plt.show()
+
+
+
 
 
 

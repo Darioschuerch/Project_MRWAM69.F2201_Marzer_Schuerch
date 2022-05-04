@@ -31,7 +31,7 @@ plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 plt.ylabel(" CHF", fontsize =15)
 plt.xlabel("Date", fontsize =15)
-plt.title("SMI 2004-2022: Moving Average of a 50 and 200 Day Base", fontsize = 25)
+plt.title("Moving Averages SMI 2004-2022", fontsize = 25)
 
 
 #Gleitender Mittelwert 50 / 200 2008-2010
@@ -51,7 +51,7 @@ plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 plt.legend()
 plt.ylabel(" CHF", fontsize =15)
 plt.xlabel("Date", fontsize =15)
-plt.title("SMI 2008-2010: Moving Average of a 50 and 100 Day Base", fontsize = 25)
+plt.title("Moving Averages SMI 2008-2010", fontsize = 25)
 
 #Gleitender Mittelwert 50 / 200 2019 -2022
 
@@ -91,7 +91,6 @@ df_04.head()
 #ploting volatility clustering
 df_04["Log Return"].plot(figsize = (20,7))
 plt.title("Volatility Clustering of SMI 2004-2022",  fontsize = 30)
-plt.ylabel("Percent", fontsize = 25)
 plt.xlabel("Date",  fontsize = 25)
 
 
@@ -123,9 +122,11 @@ print(std_SMI_19_3Y)
 
 
 #plot volatility histogram
-df_08["Log Return"].hist(bins = 100, label = "SMI 2008-2010", alpha = 0.5, figsize = (15,7))
-df_19["Log Return"].hist(bins = 100, label = "SMI 2019-2021", alpha = 0.5)
+df_08["Log Return"].hist(bins = 100, label = "Log Returns SMI 2008-2010", alpha = 0.5, figsize = (15,7))
+df_19["Log Return"].hist(bins = 100, label = "Log Returns 2019-2021", alpha = 0.5)
 plt.legend()
+plt.ylabel("Frequency", fontsize =15)
+plt.xlabel("Log Returns", fontsize =15)
 plt.title("Volatility SMI 2008-2010 and SMI 2019-2021", fontsize = 30)
 
 #Boxplot 2008-2010
@@ -172,7 +173,7 @@ mean_returns_08 = returns_08.mean()
 
 #calculate mean returns for the portfolio and normalize against investments weights
 mean_portfolio_08 = mean_returns_08.dot(weights_08)
-
+histogram pyhton stock
 #Standard deviation of the portfolio
 std_portfolio_08 = np.sqrt(weights_08.T.dot(cov_matrix_08).dot(weights_08))
 
@@ -224,7 +225,7 @@ plt.figure(figsize=(15,7))
 plt.hist(portfolio_returns_08, bins= 50)
 plt.axvline(portfolio_VaR_return_08, color="r", linestyle="solid")
 plt.legend(["VaR for alpha = 5%", "Historical Returns SMI Portfolio" ])
-plt.title("Value at Risk (VaR) SMI Portfolio 2008-2010", fontsize = 25)
+plt.title("Maximum portfolio loss in the period 2008-2010", fontsize = 25)
 plt.xlabel("Return", fontsize = 20)
 plt.ylabel("Observation Frequency", fontsize = 20)
 plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
@@ -279,7 +280,7 @@ df_19 = pdr.get_data_yahoo(portfolio_19, start_19, end_19) ["Adj Close"]
 returns_19 = df_19.pct_change()
 #print(returns)
 
-# Generate Var-Cov matrix (Kovarianzmatrix)
+# Generate Var-Cov matrix
 cov_matrix_19 = returns_19.cov()
 #print(cov_matrix)
 
@@ -298,11 +299,11 @@ mean_investment_19 = (1+mean_portfolio_19) * investment_19
 #Standard deviation of investment
 std_investment_19 = investment_19 * std_portfolio_19
 
-#Konfidenzintervall (95%)
+#Confidenceinterval (95%)
 alpha_19 = 0.05
 var_cutoff_19 = norm.ppf(alpha_19, mean_investment_19, std_investment_19) #normal cumulatice distribution
 Var_19 = investment_19 - var_cutoff_19
-print(Var_19)
+#print(Var_19)
 
 #Calculate VaR over 3 Years
 Var_array_19= []
@@ -317,7 +318,7 @@ plt.xlabel("Days", fontsize = 15)
 plt.ylabel("Max. portfolio loss (CHF)", fontsize = 15)
 plt.xlim(0,800)
 plt.ylim(0,700_000)
-plt.title("VaR sample portfolio during COVID Pandedmic 2019-2021", fontsize = 25)
+plt.title("Maximum portfolio loss in the period 2019-2021", fontsize = 25)
 plt.plot(Var_array_19, "b")
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 
@@ -336,8 +337,8 @@ plt.figure(figsize=(15,7))
 plt.hist(portfolio_returns_19, bins= 50)
 plt.axvline(portfolio_VaR_return_19, color="r", linestyle="solid")
 plt.legend(["VaR for alpha = 5%", "Historical Returns SMI Portfolio" ])
-plt.title("Value at Risk (VaR) SMI Portfolio 2019-2021", fontsize = 25)
-plt.xlabel("Return", fontsize = 20)
+plt.title("Maximum portfolio loss in the period 2019-2021", fontsize = 25)
+plt.xlabel("Returns", fontsize = 20)
 plt.ylabel("Observation Frequency", fontsize = 20)
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 

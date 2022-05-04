@@ -407,7 +407,3 @@ plt.xticks(x, fontsize = (15))
 
 
 
-
-
-
-

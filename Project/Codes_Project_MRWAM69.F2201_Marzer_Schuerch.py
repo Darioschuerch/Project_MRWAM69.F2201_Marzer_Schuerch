@@ -173,7 +173,7 @@ mean_returns_08 = returns_08.mean()
 
 #calculate mean returns for the portfolio and normalize against investments weights
 mean_portfolio_08 = mean_returns_08.dot(weights_08)
-histogram pyhton stock
+
 #Standard deviation of the portfolio
 std_portfolio_08 = np.sqrt(weights_08.T.dot(cov_matrix_08).dot(weights_08))
 

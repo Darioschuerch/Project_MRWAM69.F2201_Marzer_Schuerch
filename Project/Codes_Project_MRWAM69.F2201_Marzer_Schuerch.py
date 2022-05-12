@@ -155,16 +155,16 @@ plt.plot(df ["Adj Close"], label = labels)
 plt.title("Price Changes SMI sample Portfolio", fontsize = 25)
 plt.legend()
 
-#Max Portfolio loss  5 Titel 2008-2010  during Financial Crisis
+#Max Portfolio loss  5 Titel two months during Financial Crisis
 portfolio_08 = ["NOVN.SW", "UBSG.SW", "NESN.SW", "CSGN.SW", "ABBN.SW"]
 weights_08 = np.array([.2, .2, .2, .2, .2])
 investment_08 = 1000000
-start_08 = datetime(2008,1,1)
-end_08 = datetime(2010,12,31)
+start_08 = datetime(2008,10,1)
+end_08 = datetime(2008,12,1)
 df_08 = pdr.get_data_yahoo(portfolio_08, start_08, end_08) ["Adj Close"]
 returns_08 = df_08.pct_change()
 
-# Generate Var-Cov matrix (Kovarianzmatrix)
+# Generate Var-Cov matrix
 cov_matrix_08 = returns_08.cov()
 #print(cov_matrix)
 
@@ -183,27 +183,28 @@ mean_investment_08 = (1+mean_portfolio_08) * investment_08
 #Standard deviation of investment
 std_investment_08 = investment_08 * std_portfolio_08
 
-#Konfidenzintervall (95%)
+#confidence interval (95%)
 alpha_08 = 0.05
-var_cutoff_08 = norm.ppf(alpha_08, mean_investment_08, std_investment_08) #normal cumulatice distribution
+var_cutoff_08 = norm.ppf(alpha_08, mean_investment_08, std_investment_08) #normal cumulative distribution
 Var_08 = investment_08 - var_cutoff_08
-print(Var_08)
+#print(Var_08)
 
 
-#Calculate VaR over 3 Years
+#Calculate VaR over 2 months
 import matplotlib.pyplot as plt
 Var_array_08= []
-days_08 = int(756)
+days_08 = int(60)
 for x in range(1, days_08+1):
     Var_array_08.append(np.round(Var_08 * np.sqrt(x), 2))
-    #print(str(x) + " day VaR @ 95% confidence: " + str(np.round(Var_08 * np.sqrt(x), 2))) # acitvate code to see VaR over 3 years
+    # acitvate the following code to see VaR over two months
+    #print(str(x) + " day VaR @ 95% confidence: " + str(np.round(Var_08 * np.sqrt(x), 2)))
 
 plt.figure(figsize=(15,7))
 plt.xlabel("Days", fontsize = 15)
-plt.ylabel("Max. portfolio loss in Mio (CHF)", fontsize = 15)
-plt.xlim(0,800)
-plt.ylim(0,1_000_000)
-plt.title("VaR sample portfolio during Financial Crisis 2008-2010", fontsize = 25)
+plt.ylabel("Max. portfolio loss (CHF)", fontsize = 15)
+plt.xlim(0,70)
+plt.ylim(0,800_000)
+plt.title("Maximum portfolio loss over two months", fontsize = 25)
 plt.plot(Var_array_08, "b")
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 
@@ -274,8 +275,8 @@ plt.legend()
 portfolio_19 = ["NOVN.SW", "UBSG.SW", "NESN.SW", "CSGN.SW", "ABBN.SW"]
 weights_19 = np.array([.2, .2, .2, .2, .2])
 investment_19 = 1000000
-start_19 = datetime(2019,1,1)
-end_19 = datetime(2021,12,31)
+start_19 = datetime(2020,3,1)
+end_19 = datetime(2020,5,1)
 df_19 = pdr.get_data_yahoo(portfolio_19, start_19, end_19) ["Adj Close"]
 returns_19 = df_19.pct_change()
 #print(returns)
@@ -301,24 +302,25 @@ std_investment_19 = investment_19 * std_portfolio_19
 
 #Confidenceinterval (95%)
 alpha_19 = 0.05
-var_cutoff_19 = norm.ppf(alpha_19, mean_investment_19, std_investment_19) #normal cumulatice distribution
+var_cutoff_19 = norm.ppf(alpha_19, mean_investment_19, std_investment_19) #normal cumulative distribution
 Var_19 = investment_19 - var_cutoff_19
 #print(Var_19)
 
-#Calculate VaR over 3 Years
+#Calculate VaR over 2 months
 Var_array_19= []
-days_19 = int(756)
+days_19 = int(60)
 for x in range(1, days_19+1):
     Var_array_19.append(np.round(Var_19 * np.sqrt(x), 2))
-    #print(str(x) + " day VaR @ 95% confidence: " + str(np.round(Var_19 * np.sqrt(x), 2))) # acitvate code to see VaR over 3 years
+    # acitvate code to see VaR over 2 months
+    #print(str(x) + " day VaR @ 95% confidence: " + str(np.round(Var_19 * np.sqrt(x), 2)))
 
 
 plt.figure(figsize=(15,7))
 plt.xlabel("Days", fontsize = 15)
 plt.ylabel("Max. portfolio loss (CHF)", fontsize = 15)
-plt.xlim(0,800)
+plt.xlim(0,70)
 plt.ylim(0,700_000)
-plt.title("Maximum portfolio loss in the period 2019-2021", fontsize = 25)
+plt.title("Maximum portfolio loss over two months", fontsize = 25)
 plt.plot(Var_array_19, "b")
 plt.grid(which="major", color="k", linestyle="-.", linewidth=0.3)
 

@@ -142,18 +142,48 @@ plt.title("Boxplot Log Returns SMI  2019-2021", fontsize = (25))
 ax = box_19.plot.box()
 
 #Übersicht portfolio
-portfolio = ["NOVN.SW", "UBSG.SW", "NESN.SW", "CSGN.SW", "ABBN.SW"]
+start = datetime(2004,1,1)
+end = datetime(2021,12,31)
+df_NOVN= yf.download("NOVN.SW", start, end)
+Base_100 = df_NOVN.iat[0,4]
+df_NOVN["Base 100"] = (df_NOVN["Adj Close"]/Base_100 *100)
+df_NOVN = df_NOVN[1:]
+df_NOVN.head() #Overview Novartis
+
+df_UBSG= yf.download("UBSG.SW", start, end)
+Base_100 = df_UBSG.iat[0,4]
+df_UBSG["Base 100"] = (df_UBSG["Adj Close"]/Base_100 *100)
+df_UBSG = df_UBSG[1:]
+
+df_NESN= yf.download("NESN.SW", start, end)
+Base_100 = df_NESN.iat[0,4]
+df_NESN["Base 100"] = (df_NESN["Adj Close"]/Base_100 *100)
+df_NESN = df_NESN[1:]
+
+df_CSGN= yf.download("CSGN.SW", start, end)
+Base_100 = df_CSGN.iat[0,4]
+df_CSGN["Base 100"] = (df_CSGN["Adj Close"]/Base_100 *100)
+df_CSGN = df_CSGN[1:]
+
+df_ABBN= yf.download("ABBN.SW", start, end)
+Base_100 = df_ABBN.iat[0,4]
+df_ABBN["Base 100"] = (df_ABBN["Adj Close"]/Base_100 *100)
+df_ABBN = df_ABBN[1:]
+
 start = datetime(2004,1,1)
 end = datetime.today()
-df = pdr.get_data_yahoo(portfolio, start, end)
 plt.figure(figsize = (15,7))
 plt.grid(which="major", color='k', linestyle='-.', linewidth=0.3)
-plt.ylabel(" CHF", fontsize =15)
+plt.ylabel("Indexpoints", fontsize =15)
 plt.xlabel("Date", fontsize =15)
-labels = ["NOVN.SW", "UBSG.SW", "NESN.SW", "CSGN.SW", "ABBN.SW"]
-plt.plot(df ["Adj Close"], label = labels)
-plt.title("Price Changes SMI sample Portfolio", fontsize = 25)
+plt.plot(df_NOVN["Base 100"], label ="NOVN.SW")
+plt.plot(df_UBSG["Base 100"], label ="UBSG.SW")
+plt.plot(df_CSGN["Base 100"], label ="CSGN.SW")
+plt.plot(df_NESN["Base 100"], label ="NESN.SW")
+plt.plot(df_ABBN["Base 100"], label ="ABBN.SW")
+plt.title("Adjusted closing prices of the SMI sample Portfolio", fontsize = 25)
 plt.legend()
+
 
 #Max Portfolio loss  5 Titel two months during Financial Crisis
 portfolio_08 = ["NOVN.SW", "UBSG.SW", "NESN.SW", "CSGN.SW", "ABBN.SW"]

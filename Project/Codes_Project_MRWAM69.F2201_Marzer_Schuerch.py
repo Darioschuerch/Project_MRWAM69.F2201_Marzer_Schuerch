@@ -1,5 +1,4 @@
 #!pip install yfinance
-#!pip install fix-yahoo-finance
 #!pip install yfinance
 #!pip install datetime
 #!pip install pandas_datareader
@@ -9,6 +8,7 @@ import scipy as scipy
 import yfinance as yf
 import pandas as pd
 import datetime as dt
+import matplotlib.dates as mdates
 from datetime import datetime
 from pandas_datareader import data as pdr
 from scipy.stats import norm
